@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $data['password'];
 
     // Prepare and execute the query
-    $stmt = $mysqli->prepare("SELECT admin_id, password FROM admin WHERE username = ?");
+    $stmt = $mysqli->prepare("SELECT id, password FROM admin WHERE username = ?");
     $stmt->bind_param('s', $username);
     $stmt->execute();
     $stmt->store_result();

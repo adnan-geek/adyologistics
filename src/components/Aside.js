@@ -6,6 +6,7 @@ import {
   UsersIcon,
   Cog6ToothIcon,
   ArchiveBoxIcon,
+  ArrowLeftOnRectangleIcon
 } from '@heroicons/react/24/outline'; // Importing Heroicons
 
 const Aside = () => {
@@ -75,6 +76,12 @@ const Aside = () => {
           </li>
         </ul>
       </nav>
+      <button
+        className="logout-button bg-red-500 text-white flex items-center justify-center py-2 px-4 rounded mt-4 hover:bg-red-600"
+      >
+        <ArrowLeftOnRectangleIcon className="h-6 w-6 text-white mr-2" /> Logout
+      </button>
+
 
       {/* Footer */}
       <div className="py-4 border-t border-gray-700 text-center">

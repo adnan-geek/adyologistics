@@ -7,6 +7,7 @@ import 'leaflet/dist/leaflet.css';
 
 const Shipments = () => {
   const [shipmentsData, setShipmentsData] = useState([]);
+  const [operationMode, setOperationMode] = useState('add'); 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedShipment, setSelectedShipment] = useState(null);
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
@@ -28,18 +29,23 @@ const Shipments = () => {
     deliveryAttempts: '',
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://localhost/adyologistics/src/backend/scripts/shipments.php');
-        const data = await response.json();
-        setShipmentsData(data);
-      } catch (error) {
-        console.error('Error fetching shipments data:', error);
-      }
-    };
 
+   /********************************************************* */
+
+   const fetchData = async () => {
+    try {
+      const response = await fetch('http://localhost/adyologistics/src/backend/scripts/shipments.php');
+      const data = await response.json();
+      setShipmentsData(data);
+    } catch (error) {
+      console.error('Error fetching shipments data:', error);
+    }
+  };
+   /*********************************************************** */
+  useEffect(() => {
+   
     fetchData();
+    
   }, []);
 
   const itemsPerPage = 10;
@@ -71,7 +77,6 @@ const Shipments = () => {
           shippingDate: '',
           expectedDelivery: '',
           location: '',
-          trackingNumber: '',
           weight: '',
           dimensions: '',
           shippingCost: '',
@@ -80,7 +85,8 @@ const Shipments = () => {
           contact: '',
           deliveryAttempts: '',
         });
-        setShipmentsData([...shipmentsData, newShipment]); // Add new shipment to local state
+        // setShipmentsData([...shipmentsData, newShipment]); // Add new shipment to local state
+        fetchData();
         setIsFormVisible(false); // Hide the form after submission
       } else {
         console.log('Failed to add shipment:', response.data);
@@ -98,7 +104,13 @@ const Shipments = () => {
   const handleEditClick = (shipment) => {
     setNewShipment(shipment);
     setIsFormVisible(true);
+    setOperationMode("edit");
+    console.log(operationMode);
+    
   };
+  useEffect(() => {
+    console.log('Operation mode:', operationMode);
+}, [operationMode]); 
 
   const closeSideMenu = () => setIsSideMenuOpen(false);
 
@@ -166,7 +178,7 @@ const Shipments = () => {
               />
               <input
                 type="date"
-                name="expectedDelivery"
+                name="expectedDelivery" 
                 value={newShipment.expectedDelivery}
                 onChange={handleChange}
                 className="p-3 border rounded-lg"
@@ -181,15 +193,7 @@ const Shipments = () => {
                 className="p-3 border rounded-lg"
                 required
               />
-              <input
-                type="text"
-                name="trackingNumber"
-                value={newShipment.trackingNumber}
-                onChange={handleChange}
-                placeholder="Tracking Number"
-                className="p-3 border rounded-lg"
-                required
-              />
+            
               <input
                 type="number"
                 name="weight"
@@ -220,6 +224,7 @@ const Shipments = () => {
               <th className="px-6 py-4">ID</th>
               <th className="px-6 py-4">Sender</th>
               <th className="px-6 py-4">Receiver</th>
+              <th className="px-6 py-4">tracking Number</th>
               <th className="px-6 py-4">Status</th>
               <th className="px-6 py-4">Shipping Date</th>
               <th className="px-6 py-4">Expected Delivery</th>
@@ -234,6 +239,7 @@ const Shipments = () => {
               >
                 <td className="px-6 py-4">{shipment.id}</td>
                 <td className="px-6 py-4">{shipment.sender}</td>
+                <td className="px-6 py-4">{shipment.trackingNumber}</td>
                 <td className="px-6 py-4">{shipment.receiver}</td>
                 <td className="px-6 py-4">{shipment.status}</td>
                 <td className="px-6 py-4">{shipment.shippingDate}</td>

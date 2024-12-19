@@ -6,6 +6,7 @@ import Settings from '../pages/Settings';
 import Users from '../pages/Users';
 import Vehicles from '../pages/Vehicles';
 import Shipments from '../pages/Shipments';
+import '../styles/main.css';
 
 const Main = () => {
   return (

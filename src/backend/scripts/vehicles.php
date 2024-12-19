@@ -41,32 +41,49 @@ if ($requestMethod == 'GET') {
 }
 // Handle POST request (adding a new vehicle)
 elseif ($requestMethod == 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
+    // Check if an image file was uploaded
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
+        $image = $_FILES['image'];
 
-    // Check if required data is provided
-    if (isset($data['vehicle_name'], $data['plate_number'], $data['vehicle_image'], 
-              $data['max_volume'], $data['status'], $data['location'])) {
-        
-        $vehicleName = $data['vehicle_name'];
-        $plateNumber = $data['plate_number'];
-        $vehicleImage = $data['vehicle_image'];
-        $maxVolume = $data['max_volume'];
-        $status = $data['status'];
-        $location = $data['location'];
+        // Define the upload directory
+        $uploadDir = '../uploads/'; // Ensure this folder is writable
 
-        // SQL query to insert new vehicle into the database
-        $sql = "INSERT INTO vehicles (vehicle_name, plate_number, vehicle_image, max_volume, status, location) 
-                VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssssss", $vehicleName, $plateNumber, $vehicleImage, $maxVolume, $status, $location);
-        
-        if ($stmt->execute()) {
-            echo json_encode(["message" => "Vehicle added successfully"]);
+        // Generate a unique file name
+        $imageName = time() . '_' . basename($image['name']);
+        $imagePath = $uploadDir . $imageName;
+
+        // Move the uploaded image to the folder
+        if (move_uploaded_file($image['tmp_name'], $imagePath)) {
+            // Get other vehicle details from the POST data
+            $data = json_decode(file_get_contents('php://input'), true);
+
+            if (isset($data['vehicle_name'], $data['plate_number'], $data['max_volume'], $data['status'], $data['location'])) {
+                $vehicleName = $data['vehicle_name'];
+                $plateNumber = $data['plate_number'];
+                $maxVolume = $data['max_volume'];
+                $status = $data['status'];
+                $location = $data['location'];
+                $vehicleImage = $imagePath; // Store the image path
+
+                // SQL query to insert new vehicle into the database
+                $sql = "INSERT INTO vehicles (vehicle_name, plate_number, vehicle_image, max_volume, status, location) 
+                        VALUES (?, ?, ?, ?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("ssssss", $vehicleName, $plateNumber, $vehicleImage, $maxVolume, $status, $location);
+
+                if ($stmt->execute()) {
+                    echo json_encode(["message" => "Vehicle added successfully"]);
+                } else {
+                    echo json_encode(["error" => "Failed to add vehicle"]);
+                }
+            } else {
+                echo json_encode(["error" => "Missing required fields"]);
+            }
         } else {
-            echo json_encode(["error" => "Failed to add vehicle"]);
+            echo json_encode(["error" => "Failed to upload image"]);
         }
     } else {
-        echo json_encode(["error" => "Missing required fields"]);
+        echo json_encode(["error" => "No image file uploaded"]);
     }
 }
 // Handle PUT request (editing a vehicle's status)
@@ -120,4 +137,3 @@ else {
 // Close the database connection
 mysqli_close($conn);
 ?>
-

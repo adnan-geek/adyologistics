@@ -11,47 +11,31 @@
 }
 
 :root {
-    --color-dark: #1d2027;
-    --color-orange: #e77d35;
+    --color-dark: #333333;
+    --color-orange:  #ff853e;
+   
   }
    .text-center{
     text-align: center;
   }
-.aside {
-    width: 250px;
-    color: var(--color-very-light-gray);
-    padding: 15px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    height: 100vh;
-    background-color: var(--color-dark);
+aside {
+
+    background-color: var(--color-dark) !important;
   }
-  .aside .aside__logo img {
-    width: 66px;
+  aside button  {
+
+    background-color: var(--color-orange) !important;
+  } 
+  aside nav li a:hover{
+    background-color: var(--color-orange) !important;
+    
+  }
+  aside nav li a:hover svg , 
+  aside nav li a:hover
+  {
+    color: var(--color-dark) !important;
   }
 
-  .aside .aside__navigation li  {
-    list-style: none;
-    display: flex;
-    align-items: center;
-    padding: 10px 30px;
-    background-color: var(--color-dark-gray);
-    border-radius: 5px;
-    margin: 20px 0;
-
-  }
-  .aside .aside__navigation li img {
-    margin-right: 15px;
-  }
-  .aside .aside__navigation li a {
-    color: white;
-  }
-  .aside .aside__navigation li span {
-    padding-left: 10px;
-  }
-  
-  .aside li {
-    margin: 10px 0;
-  }
   /* *********************************** */
    /* start main   */
   /*****************************/
